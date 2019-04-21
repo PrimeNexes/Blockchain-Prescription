@@ -23,30 +23,42 @@
         <div class="col-lg-12">
           <h1 class="text-center">Prescription List</h1>
           <hr/>
-          <br/>
+          <h1 id="pWallet" class="text-center"></h1>
           <div id="loader">
-            <p class="text-center">Loading...</p>
+            Loading...
           </div>
           <div id="content" style="display: none;">
+            <p id="accountAddress" class="text-center"></p>
+            <hr/>
             <table class="table">
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Patient Account ID</th>
-                  <th scope="col">Doctor Account ID</th>
-                  <th scope="col">Encrypted JSON Prescription Data</th>
+                  <th scope="col">Patient Name</th>
+                  <th scope="col">Doctor Name</th>
+                  <th scope="col">Prescription</th>
+                  <th scope="col">Timestamp</th>
                 </tr>
               </thead>
               <tbody id="prescriptionResult">
               </tbody>
             </table>
+            <div class="text-center" id="result">
+
+            </div>
             <hr/>
-            <label for="inputData">Enter demo data</label>
-            <input id='inputData' type="text"></input>
-
-              <button onclick="App.castVote(); return false;" class="btn btn-primary">Submit</button>
-
-            <p id="accountAddress" class="text-center"></p>
+            <p class="text-center">
+                <h1>Enter Prescription to Add</h1>
+                <p>
+                <label for="inputData">Enter Wallet</label>
+                <input id='inputData' type="text"></input>
+                <label for="inputPData">Enter Name</label>
+                <input id='inputPData' type="text"></input>
+                </p>
+                <div id="summernote"></div>
+                <br/>
+                <button onclick="App.castPrescription(); return false;" class="btn btn-primary">Submit</button>
+            </p>
           </div>
         </div>
       </div>
@@ -55,9 +67,12 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
+    
   </body>
 </html>

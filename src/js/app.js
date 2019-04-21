@@ -2,7 +2,6 @@ App = {
   web3Provider: null,
   contracts: {},
   account: '0x0',
-  hasVoted: false,
 
   init: function() {
     return App.initWeb3();
@@ -59,8 +58,8 @@ App = {
     var loader = $("#loader");
     var content = $("#content");
 
-    loader.show();
-    content.hide();
+    loader.hide();
+    content.show();
 
     // Load account data
     web3.eth.getCoinbase(function(err, account) {
@@ -74,37 +73,46 @@ App = {
     App.contracts.Prescription.deployed().then(function(instance) {
       
       prescriptionInstance = instance;
-      return prescriptionInstance.candidatesCount();
-    }).then(function(candidatesCount) {
+      return prescriptionInstance.prescriptionCount();
+    }).then(function(prescriptionsCount) {
       
-      loader.hide();
-      content.show();
-;
+
       var prescriptionResult = $("#prescriptionResult");
       prescriptionResult.empty();
-
-      for (var i = 1; i <= candidatesCount; i++) {
-        
-        prescriptionInstance.candidates(i).then(function(prescribe) {
-
+      var getPaitient = $("#inputPData").val();
+      console.log(getPaitient);
+      for (var i = 1; i <= prescriptionsCount; i++) {
+      
+        prescriptionInstance.prescriptions(i).then(function(prescribe) {
+          
           var id = prescribe[0];
-          var pname = prescribe[1];
-          var dname = prescribe[2];
-          var data = prescribe[3];
+          var paddress = prescribe[1];
+          var daddress = prescribe[2];
+          var pname = prescribe[3];
+          var dname = prescribe[4];
+          var data = prescribe[5];
+          var time = new Date(parseInt(prescribe[6])).toUTCString();
           d=JSON.parse(data);
+          console.log(data);
           // Render prescribe Result
-          var prescribeTemplate = "<tr><th>" + id + "</th><td>" + pname + "</td><td>" + dname + "</td><td>"+d.data+"</td></tr>"
-          prescriptionResult.append(prescribeTemplate);
+          // if(getPaitient == pname){
+            var prescribeTemplate = "<tr><th>" + id + "</th><td>" + pname + "</td><td>" + dname + "</td><td>"+d.data+"</td><td>" + time + "</td></tr>"
+            prescriptionResult.append(prescribeTemplate);
+          // }
         });
       }
     })
+
   },
 
-  castVote: function() {
-    var d = $('#inputData').val();
+  castPrescription: function() {
+    var d = $('#summernote').summernote('code');
     var data =JSON.stringify({data:d});
+    var wallet = $('#inputData').val();
+    var name = $('#inputPData').val();
+    var time = new Date().getTime().toString();
     App.contracts.Prescription.deployed().then(function(instance) {
-      return instance.vote(0xbE662B269e3Fd573721286E7d33de192fA1a526B,data, { from: App.account });
+      return instance.prescribe(wallet,name,'Strange',data,time, { from: App.account });
     }).then(function(result) {
       // Wait for votes to update
       $("#content").hide();
@@ -112,11 +120,18 @@ App = {
     }).catch(function(err) {
       console.error(err);
     });
+  },
+
+  getPatient: function() {
+    $("#pWallet").append($("#paitientInputData").val());
+    $("#content").show();
+    $("#loader").hide();
   }
 };
 
 $(function() {
   $(window).load(function() {
+    $('#summernote').summernote();
     App.init();
   });
 });
